@@ -1,7 +1,9 @@
-import 'package:chat_app/models/user_model.dart';
+
 import 'package:chat_app/services/chat_service.dart';
 import 'package:chat_app/views/chat_screen.dart';
+import 'package:chat_app/views/sign_in_screen.dart';
 import 'package:chat_app/widgets/custom_chat_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         backgroundColor: Colors.green,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => SignInScreen()),
+              (route) => false,
+            );
+          },
           icon: Icon(CupertinoIcons.back, color: Colors.white),
         ),
         title: Column(
@@ -70,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ValueListenableBuilder(
           valueListenable: appBrain.users,
           builder: (BuildContext context, value, Widget? child) {
-            print("total Users ${appBrain.users.value.length} ") ;
+            print("total Users ${appBrain.users.value.length} ");
             return ListView.separated(
               itemCount: appBrain.users.value.length,
               itemBuilder: (context, index) {

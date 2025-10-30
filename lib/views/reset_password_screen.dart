@@ -4,10 +4,47 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_text_field.dart';
 
-class ResetPasswordScreen extends StatelessWidget {
+class ResetPasswordScreen extends StatefulWidget {
   ResetPasswordScreen({super.key});
 
+  @override
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+}
+
+class _ResetPasswordScreenState extends State<ResetPasswordScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController animationController;
+  late final Animation<double> scaleAnimation;
+  late final Animation<double> fadeAnimation;
+  late final Animation<Offset> slideAnimation;
   final TextEditingController _emailController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1200),
+    );
+    scaleAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Interval(0.2, 0.8, curve: Curves.elasticOut),
+      ),
+    );
+    fadeAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Interval(0, 0.5)),
+    );
+    slideAnimation = Tween(begin: Offset(0, 0.3), end: Offset.zero).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Interval(0.4, 1.0, curve: Curves.easeOutBack),
+      ),
+    );
+
+    animationController.forward();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,30 +79,32 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 80),
-              Container(
-                padding: EdgeInsets.all(25),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.green.withOpacity(0.3),
-                      blurRadius: 8,
-                      spreadRadius: 5,
-                      offset: Offset(5, 5),
-                    ),
-                  ],
-                  color: Colors.green
-                ),
-                child: Icon(
-                  Icons.lock_reset,
-                  color: Colors.white,
-                  size: 70,
+              ScaleTransition(
+                scale: scaleAnimation,
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.green.withOpacity(0.3),
+                        blurRadius: 8,
+                        spreadRadius: 5,
+                        offset: Offset(5, 5),
+                      ),
+                    ],
+                    color: Colors.green,
+                  ),
+                  child: Icon(Icons.lock_reset, color: Colors.white, size: 70),
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
-                "Reset Password",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+              FadeTransition(
+                opacity: fadeAnimation,
+                child: Text(
+                  "Reset Password",
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.w600),
+                ),
               ),
               const SizedBox(height: 20),
               Text(
@@ -74,56 +113,65 @@ class ResetPasswordScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 8,
-                      spreadRadius: 5,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      spacing: 8,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.green.withOpacity(0.2),
+              SlideTransition(
+                position: slideAnimation,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        spreadRadius: 5,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        spacing: 8,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.green.withOpacity(0.2),
+                            ),
+                            child: Icon(
+                              Icons.mail_outline,
+                              color: Colors.green,
+                            ),
                           ),
-                          child: Icon(Icons.mail_outline, color: Colors.green),
-                        ),
 
-                        Text(
-                          "Recovery Email",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                          Text(
+                            "Recovery Email",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    CustomTextField(
-                      hintText: "Enter your email",
-                      controller: _emailController,
-                      validator: (String? p0) {},
-                    ),
-                    const SizedBox(height: 20),
-                    CustomButton(
-                      onPressed: () {
-                        FirebaseService.resetPassword(_emailController.text, context) ;
-                      },
-                      labelText: "Send Recovery Email",
-                    ),
-                  ],
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      CustomTextField(
+                        hintText: "Enter your email",
+                        controller: _emailController,
+                        validator: (String? p0) {},
+                      ),
+                      const SizedBox(height: 20),
+                      CustomButton(
+                        onPressed: () {
+                          FirebaseService.resetPassword(
+                            _emailController.text,
+                            context,
+                          );
+                        },
+                        labelText: "Send Recovery Email",
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
