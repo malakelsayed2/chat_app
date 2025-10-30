@@ -36,10 +36,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.green,
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 10,
+                      color: Colors.green.withOpacity(0.3),
+                      blurRadius: 8,
+                      spreadRadius: 5,
                       offset: Offset(5, 5),
                     ),
                   ],
@@ -142,9 +143,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         onPressed: () async {
                           if (formKey.currentState!.validate()) {
                             await FirebaseService.register(
-                              emailController.text.trim(),
-                              passwordController.text.trim(),
-                              usernameController.text.trim(),
+                              emailController.text,
+                              passwordController.text,
+                              usernameController.text,
                               context,
                             );
                           }

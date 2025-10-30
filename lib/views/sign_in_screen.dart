@@ -1,23 +1,20 @@
 import 'package:chat_app/services/firebase_service.dart';
+import 'package:chat_app/views/reset_password_screen.dart';
 import 'package:chat_app/views/sign_up_screen.dart';
 import 'package:chat_app/widgets/custom_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_text_field.dart';
-
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
-
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
-
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool isPasswordHidden = true;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,10 +29,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.green,
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 10,
+                      color: Colors.green.withOpacity(0.3),
+                      blurRadius: 8,
+                      spreadRadius: 5,
                       offset: Offset(5, 5),
                     ),
                   ],
@@ -113,7 +111,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ResetPasswordScreen(),));
+                            },
                             child: const Text(
                               'Forgot Password?',
                               style: TextStyle(

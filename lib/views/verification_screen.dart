@@ -14,20 +14,20 @@ class VerificationScreen extends StatefulWidget {
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
-  // late final Timer timer ;
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   FirebaseAuth.instance.currentUser!.sendEmailVerification();
-  //   timer =Timer.periodic(Duration(seconds: 1),(_)async{
-  //     final isVerified = await FirebaseService.checkVerificationStatus() ;
-  //     if(isVerified){
-  //      timer.cancel() ;
-  //      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
-  //     }
-  //   });
-  //   super.initState();
-  // }
+  late final Timer timer ;
+  @override
+  void initState() {
+    // TODO: implement initState
+    FirebaseAuth.instance.currentUser!.sendEmailVerification();
+    timer =Timer.periodic(Duration(seconds: 1),(_)async{
+      final isVerified = await FirebaseService.checkVerificationStatus() ;
+      if(isVerified){
+       timer.cancel() ;
+       Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
             LoadingAnimationWidget.horizontalRotatingDots(color: Colors.green, size: 50),
             Text("Verify your account" , style: TextStyle(fontSize: 25 , fontWeight: FontWeight.bold),),
             Text("Please, check your mail!" , style: TextStyle(fontSize: 17),),
-
           ],
         ),
       ),

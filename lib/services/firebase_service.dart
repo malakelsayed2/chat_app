@@ -1,3 +1,4 @@
+import 'package:chat_app/models/user_model.dart';
 import 'package:chat_app/views/home_screen.dart';
 import 'package:chat_app/views/verification_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +13,6 @@ class FirebaseService{
     return FirebaseAuth.instance.currentUser!.emailVerified;
 
   }
-
   static Future<void> register(String email,String password,String userName, BuildContext context)async{
 
     try{
@@ -23,12 +23,11 @@ class FirebaseService{
 
       await credential.user!.updateDisplayName(userName);
 
-      // await credential.user!.sendEmailVerification();
+      final user = UserModel(email: email, username: userName, id: credential.user!.uid);
 
-      await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).set({
-        "email": email,
-        "username": userName
-      });
+      await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).set(
+        user.toJson()
+      );
 
       Navigator.push(context, MaterialPageRoute(builder: (context) => VerificationScreen(),));
 
@@ -54,5 +53,10 @@ class FirebaseService{
     }catch(e){
 
     }
+  }
+
+  static Future<void> resetPassword(String email , BuildContext context)async{
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Email sent to $email")));
   }
 }
